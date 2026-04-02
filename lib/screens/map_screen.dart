@@ -1,10 +1,77 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import '../theme.dart';
 import '../providers/mesh_provider.dart';
 
-class MapScreen extends StatelessWidget {
+class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
+
+  @override
+  State<MapScreen> createState() => _MapScreenState();
+}
+
+class _MapScreenState extends State<MapScreen> {
+  LatLng? _currentPosition;
+  bool _isLoading = true;
+  String _errorMessage = '';
+  final MapController _mapController = MapController();
+
+  @override
+  void initState() {
+    super.initState();
+    _determinePosition();
+  }
+
+  Future<void> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = 'Location services are disabled.';
+          _isLoading = false;
+        });
+      }
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        if (mounted) {
+          setState(() {
+            _errorMessage = 'Location permissions are denied';
+            _isLoading = false;
+          });
+        }
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = 'Location permissions are permanently denied, we cannot request permissions.';
+          _isLoading = false;
+        });
+      }
+      return;
+    }
+
+    Position position = await Geolocator.getCurrentPosition();
+    if (mounted) {
+      setState(() {
+        _currentPosition = LatLng(position.latitude, position.longitude);
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,45 +82,69 @@ class MapScreen extends StatelessWidget {
       child: Stack(
         children: [
           Positioned.fill(
-            child: Opacity(
-              opacity: 0.4,
-              child: Image.network(
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuDV1ULPwkXju_gjQaZVeJPd6AXG2w_rPaLj9Ro5kwOE3zgrOJxLZ-CxYwMlxq_Tdc54D7xf6WfqLc6Ag2hHB4qJ1VzNZ7pSVMBdOrPkP4EfHJLNixzJ1vmfcU0u_n9kKyBT1mPEK_y5Ci8VHdNZfUzPRJWU3et3z_4FiP7Fe-vfvfIyHdqWHTnyr6bWfAYfTYEIUOlD87NojUWm1HO1eTsySZmRRw_A5ThHIt1wRnbWUhJVwg0x3ZQAr1C4OGTEdpScqvh8ZMfwWgU',
-                fit: BoxFit.cover,
-                color: Colors.grey,
-                colorBlendMode: BlendMode.saturation,
-              ),
-            ),
-          ),
-          Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 16, height: 16,
-                  decoration: BoxDecoration(
-                    color: AppTheme.primary,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2),
-                    boxShadow: const [
-                      BoxShadow(color: AppTheme.primaryContainer, blurRadius: 4),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: AppTheme.surfaceContainer.withOpacity(0.6),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: const Text(
-                    'LOCAL_NODE',
-                    style: TextStyle(fontFamily: 'Inter', fontSize: 10, fontWeight: FontWeight.w900, color: AppTheme.primary, letterSpacing: 1.5),
-                  ),
-                ),
-              ],
-            ),
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _errorMessage.isNotEmpty
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            _errorMessage,
+                            style: const TextStyle(color: Colors.redAccent, fontFamily: 'Inter', fontSize: 16),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+                    : FlutterMap(
+                        mapController: _mapController,
+                        options: MapOptions(
+                          initialCenter: _currentPosition!,
+                          initialZoom: 16.0,
+                        ),
+                        children: [
+                          TileLayer(
+                            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            userAgentPackageName: 'com.resqnet.app',
+                          ),
+                          MarkerLayer(
+                            markers: [
+                              Marker(
+                                point: _currentPosition!,
+                                width: 80,
+                                height: 80,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      width: 16, height: 16,
+                                      decoration: BoxDecoration(
+                                        color: AppTheme.primary,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(color: Colors.white, width: 2),
+                                        boxShadow: const [
+                                          BoxShadow(color: AppTheme.primaryContainer, blurRadius: 4),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: AppTheme.surfaceContainer.withOpacity(0.8),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: const Text(
+                                        'LOCAL_NODE',
+                                        style: TextStyle(fontFamily: 'Inter', fontSize: 8, fontWeight: FontWeight.w900, color: AppTheme.primary, letterSpacing: 1.0),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
           ),
           Positioned(
             top: 24, left: 24,
@@ -78,9 +169,14 @@ class MapScreen extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
-                  onPressed: () {},
-                  icon: const Icon(Icons.wifi_tethering, size: 20),
-                  label: const Text('INITIATE SCAN', style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w900, fontSize: 14)),
+                  onPressed: () {
+                    // Optional: re-center map on user location
+                    if (_currentPosition != null) {
+                      _mapController.move(_currentPosition!, 16.0);
+                    }
+                  },
+                  icon: const Icon(Icons.my_location, size: 20),
+                  label: const Text('RE-CENTER MESH', style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w900, fontSize: 14)),
                 ),
                 const SizedBox(height: 16),
                 Container(
