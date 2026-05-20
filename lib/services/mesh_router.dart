@@ -171,12 +171,7 @@ class MeshRouter {
              headers: {'Content-Type': 'application/json'},
            );
            messageData['status'] = 'Gateway Delivered';
-           final localData = Map<String, dynamic>.from(messageData);
-           localData['content'] = content;
-           await MeshDatabase.instance.insertMessage(localData);
-           _chatProvider.addMessageLocally(localData);
            print("GATEWAY SUCCESS: Local authorities alert sent directly to internet.");
-           return; // Delivered! No need to spam the local offline mesh.
          } catch (e) {
             print("HTTP post failed, falling back to offline mesh: $e");
          }

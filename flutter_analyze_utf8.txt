@@ -1,0 +1,57 @@
+﻿Analyzing flutter_app...                                        
+
+warning - Unused import: 'package:shared_preferences/shared_preferences.dart' - lib\main.dart:6:8 - unused_import
+   info - Don't invoke 'print' in production code - lib\main.dart:23:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\main.dart:26:5 - avoid_print
+   info - The file name 'chat_provider-DESKTOP-ASSAU3H.dart' isn't a lower_case_with_underscores identifier - lib\providers\chat_provider-DESKTOP-ASSAU3H.dart:1:1 - file_names
+   info - The private field _signalStrength could be 'final' - lib\providers\mesh_provider.dart:5:10 - prefer_final_fields
+   info - The private field _activeProtocols could be 'final' - lib\providers\mesh_provider.dart:6:16 - prefer_final_fields
+   info - The private field _connectedPeers could be 'final' - lib\providers\mesh_provider.dart:7:30 - prefer_final_fields
+warning - The value of the local variable 'msg' isn't used - lib\screens\broadcast_screen.dart:18:11 - unused_local_variable
+   info - 'desiredAccuracy' is deprecated and shouldn't be used. use settings parameter with AndroidSettings, AppleSettings, WebSettings, or LocationSettings - lib\screens\broadcast_screen.dart:44:63 - deprecated_member_use
+   info - Don't invoke 'print' in production code - lib\screens\broadcast_screen.dart:47:7 - avoid_print
+   info - Use 'const' with the constructor to improve performance - lib\screens\chats_screen.dart:60:17 - prefer_const_constructors
+   info - Use 'const' literals as arguments to constructors of '@immutable' classes - lib\screens\chats_screen.dart:61:29 - prefer_const_literals_to_create_immutables
+   info - Use 'const' with the constructor to improve performance - lib\screens\chats_screen.dart:217:30 - prefer_const_constructors
+   info - 'activeColor' is deprecated and shouldn't be used. Use activeThumbColor instead. This feature was deprecated after v3.31.0-2.0.pre - lib\screens\status_screen.dart:114:13 - deprecated_member_use
+   info - Don't invoke 'print' in production code - lib\services\hardware_service.dart:26:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\hardware_service.dart:38:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\hardware_service.dart:48:7 - avoid_print
+   info - The imported package 'path' isn't a dependency of the importing package - lib\services\mesh_database.dart:2:8 - depend_on_referenced_packages
+   info - The file name 'mesh_network_manager-DESKTOP-ASSAU3H.dart' isn't a lower_case_with_underscores identifier - lib\services\mesh_network_manager-DESKTOP-ASSAU3H.dart:1:1 - file_names
+   info - The import of 'dart:typed_data' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/foundation.dart' - lib\services\mesh_network_manager-DESKTOP-ASSAU3H.dart:3:8 - unnecessary_import
+   info - Don't invoke 'print' in production code - lib\services\mesh_network_manager-DESKTOP-ASSAU3H.dart:53:5 - avoid_print
+   info - Empty catch block - lib\services\mesh_network_manager-DESKTOP-ASSAU3H.dart:76:23 - empty_catches
+   info - Don't invoke 'print' in production code - lib\services\mesh_network_manager-DESKTOP-ASSAU3H.dart:122:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_network_manager-DESKTOP-ASSAU3H.dart:124:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_network_manager-DESKTOP-ASSAU3H.dart:173:13 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_network_manager-DESKTOP-ASSAU3H.dart:177:12 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_network_manager-DESKTOP-ASSAU3H.dart:180:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_network_manager-DESKTOP-ASSAU3H.dart:182:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_network_manager-DESKTOP-ASSAU3H.dart:189:8 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_network_manager-DESKTOP-ASSAU3H.dart:204:8 - avoid_print
+   info - The import of 'dart:typed_data' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/foundation.dart' - lib\services\mesh_network_manager.dart:3:8 - unnecessary_import
+   info - Don't invoke 'print' in production code - lib\services\mesh_network_manager.dart:53:5 - avoid_print
+   info - Empty catch block - lib\services\mesh_network_manager.dart:76:23 - empty_catches
+   info - Don't invoke 'print' in production code - lib\services\mesh_network_manager.dart:122:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_network_manager.dart:124:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_network_manager.dart:170:12 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_network_manager.dart:173:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_network_manager.dart:175:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_network_manager.dart:182:8 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_network_manager.dart:197:8 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_router.dart:35:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_router.dart:60:10 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_router.dart:82:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_router.dart:93:17 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_router.dart:98:14 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_router.dart:125:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_router.dart:164:21 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_router.dart:178:12 - avoid_print
+   info - Don't invoke 'print' in production code - lib\services\mesh_router.dart:181:13 - avoid_print
+   info - 'background' is deprecated and shouldn't be used. Use surface instead. This feature was deprecated after v3.18.0-0.1.pre - lib\theme.dart:43:9 - deprecated_member_use
+   info - 'MaterialStateProperty' is deprecated and shouldn't be used. Use WidgetStateProperty instead. Moved to the Widgets layer to make code available outside of Material. This feature was deprecated after v3.19.0-0.3.pre - lib\theme.dart:65:25 - deprecated_member_use
+   info - 'MaterialState' is deprecated and shouldn't be used. Use WidgetState instead. Moved to the Widgets layer to make code available outside of Material. This feature was deprecated after v3.19.0-0.3.pre - lib\theme.dart:66:31 - deprecated_member_use
+   info - 'MaterialStateProperty' is deprecated and shouldn't be used. Use WidgetStateProperty instead. Moved to the Widgets layer to make code available outside of Material. This feature was deprecated after v3.19.0-0.3.pre - lib\theme.dart:71:20 - deprecated_member_use
+   info - 'MaterialState' is deprecated and shouldn't be used. Use WidgetState instead. Moved to the Widgets layer to make code available outside of Material. This feature was deprecated after v3.19.0-0.3.pre - lib\theme.dart:72:31 - deprecated_member_use
+

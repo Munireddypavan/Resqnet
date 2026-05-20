@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'theme.dart';
 import 'screens/main_scaffold.dart';
+import 'screens/splash_screen.dart';
 import 'providers/mesh_provider.dart';
 import 'providers/chat_provider.dart';
 import 'services/mesh_network_manager.dart';
@@ -93,7 +94,7 @@ class _ResQNetAppState extends State<ResQNetApp> {
       title: 'ResQNet',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.tacticalTheme,
-      home: const MainScaffold(),
+      home: const SplashScreen(),
     );
   }
 }

@@ -45,136 +45,195 @@ class _ChatsScreenState extends State<ChatsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final meshProvider = context.watch<MeshProvider>();
     final chatProvider = context.watch<ChatProvider>();
-    
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(16),
-          color: AppTheme.surfaceContainer,
-          child: Row(
-            children: [
-              const Icon(Icons.wifi_tethering, color: AppTheme.primary),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    final meshProvider = context.watch<MeshProvider>();
+
+    return SafeArea(
+      child: Column(
+        children: [
+          // Minimalist Header
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
                   children: [
-                    const Text('GLOBAL MESH CHAT', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
-                    Row(
-                      children: [
-                        Flexible(
-                          child: Text(
-                            '${meshProvider.connectedNodesCount} NODES CONNECTED', 
-                            style: const TextStyle(fontSize: 10, color: AppTheme.onSurfaceVariant, fontWeight: FontWeight.bold),
-                            overflow: TextOverflow.ellipsis,
-                          )
-                        ),
-                        const SizedBox(width: 8),
-                        Container(width: 4, height: 4, decoration: const BoxDecoration(color: AppTheme.primary, shape: BoxShape.circle)),
-                        const SizedBox(width: 8),
-                        const Flexible(
-                           child: Text('SECURE AES-256', style: TextStyle(fontSize: 10, color: AppTheme.primary, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis)
-                        ),
-                      ],
+                    const Icon(Icons.forum_rounded, color: AppTheme.primary, size: 20),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'MESH CHAT', 
+                      style: TextStyle(
+                        fontFamily: 'Inter', 
+                        fontWeight: FontWeight.w600, 
+                        fontSize: 14, 
+                        color: AppTheme.onSurface,
+                        letterSpacing: 0.5,
+                      ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(width: 16),
-              const Icon(Icons.info, color: AppTheme.onSurfaceVariant),
-              const SizedBox(width: 16),
-              const Icon(Icons.more_vert, color: AppTheme.onSurfaceVariant),
-            ],
-          ),
-        ),
-        Expanded(
-          child: ListView.builder(
-            controller: _scrollController,
-            padding: const EdgeInsets.all(16),
-            itemCount: chatProvider.messages.length,
-            itemBuilder: (context, index) {
-              final msg = chatProvider.messages[index];
-              final isMe = msg['senderId'] == MeshRouter.instance.localDeviceId;
-              final dt = DateTime.fromMillisecondsSinceEpoch(msg['timestamp'] as int);
-              final timeStr = DateFormat('HH:mm').format(dt);
-              
-              return _buildMessage(
-                isMe ? 'Self' : (msg['senderId'] as String).substring(0, 8),
-                timeStr,
-                msg['content'],
-                isMe,
-                status: msg['status'] ?? 'Sent',
-                hops: msg['hops'] as int? ?? 0,
-              );
-            },
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.all(16),
-          color: AppTheme.surfaceContainerLowest,
-          child: Row(
-            children: [
-              const Icon(Icons.attach_file, color: AppTheme.onSurfaceVariant),
-              const SizedBox(width: 16),
-              Expanded(
-                child: TextField(
-                  controller: _msgController,
-                  onSubmitted: (_) => _sendMessage(),
-                  decoration: const InputDecoration(
-                    hintText: 'ENTER MESH PROTOCOL DATA...',
-                    hintStyle: TextStyle(color: AppTheme.surfaceContainerHighest, fontSize: 12),
-                    border: InputBorder.none,
+                Text(
+                  '${meshProvider.connectedNodesCount} PEERS', 
+                  style: const TextStyle(
+                    fontSize: 10, 
+                    fontWeight: FontWeight.w600, 
+                    color: AppTheme.outline,
+                    letterSpacing: 1.0,
                   ),
                 ),
-              ),
-              GestureDetector(
-                onTap: _sendMessage,
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(color: AppTheme.primaryContainer, borderRadius: BorderRadius.circular(4)),
-                  child: const Icon(Icons.send, color: AppTheme.onPrimaryContainer, size: 20),
-                ),
-              )
-            ],
+              ],
+            ),
           ),
-        )
-      ],
+          
+          Expanded(
+            child: ListView.builder(
+              controller: _scrollController,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              itemCount: chatProvider.messages.length,
+              itemBuilder: (context, index) {
+                final msg = chatProvider.messages[index];
+                final isMe = msg['senderId'] == MeshRouter.instance.localDeviceId;
+                final dt = DateTime.fromMillisecondsSinceEpoch(msg['timestamp'] as int);
+                final timeStr = DateFormat('HH:mm').format(dt);
+                
+                return _buildMessage(
+                  isMe ? 'Self' : (msg['senderId'] as String).substring(0, 8),
+                  timeStr,
+                  msg['content'],
+                  isMe,
+                  status: msg['status'] ?? 'Sent',
+                  hops: msg['hops'] as int? ?? 0,
+                );
+              },
+            ),
+          ),
+          
+          // Modern Pill Input
+          Container(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+            decoration: const BoxDecoration(
+              color: Colors.transparent,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppTheme.surfaceContainerLowest,
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(color: AppTheme.surfaceContainerHighest, width: 1),
+                    ),
+                    child: TextField(
+                      controller: _msgController,
+                      style: const TextStyle(color: AppTheme.onSurface, fontSize: 14, fontWeight: FontWeight.w400),
+                      decoration: const InputDecoration(
+                        hintText: 'Message mesh network...',
+                        hintStyle: TextStyle(color: AppTheme.outline, fontWeight: FontWeight.w300),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                        border: InputBorder.none,
+                      ),
+                      onSubmitted: (_) => _sendMessage(),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                GestureDetector(
+                  onTap: _sendMessage,
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: const BoxDecoration(
+                      color: AppTheme.primary,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.arrow_upward_rounded, color: AppTheme.background, size: 20),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildMessage(String sender, String time, String text, bool isSent, {bool isSystem = false, String status = 'Sent', int hops = 0}) {
+  Widget _buildMessage(String sender, String time, String text, bool isSent, {String status = 'Sent', int hops = 0}) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 24),
-      child: Column(
-        crossAxisAlignment: isSent ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Align(
+        alignment: isSent ? Alignment.centerRight : Alignment.centerLeft,
+        child: Container(
+          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: isSent ? AppTheme.primary : AppTheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.only(
+              topLeft: const Radius.circular(16),
+              topRight: const Radius.circular(16),
+              bottomLeft: Radius.circular(isSent ? 16 : 4),
+              bottomRight: Radius.circular(isSent ? 4 : 16),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('$sender // $time'.toUpperCase(), style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: isSent ? AppTheme.primary : AppTheme.onSurfaceVariant)),
-              if (isSent) ...[
-                const SizedBox(width: 8),
-                Text('[$status]', style: const TextStyle(fontSize: 8, color: AppTheme.outline)),
+              if (!isSent) ...[
+                Text(
+                  sender,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.outline.withValues(alpha: 0.8),
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                const SizedBox(height: 4),
               ],
-              if (!isSent && hops > 0) ...[
-                const SizedBox(width: 8),
-                Text('[$hops HOP${hops == 1 ? '' : 'S'}]', style: const TextStyle(fontSize: 8, color: AppTheme.outline)),
-              ],
+              Text(
+                text,
+                style: TextStyle(
+                  color: isSent ? AppTheme.background : AppTheme.onSurface,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  height: 1.3,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    time,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: isSent ? AppTheme.background.withValues(alpha: 0.7) : AppTheme.outline,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  if (!isSent && hops > 0) ...[
+                    const SizedBox(width: 8),
+                    Text(
+                      '$hops hops',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: AppTheme.outline,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                  if (isSent) ...[
+                    const SizedBox(width: 4),
+                    Icon(
+                      status == 'Relayed' ? Icons.done_all : Icons.check,
+                      size: 14,
+                      color: AppTheme.background.withValues(alpha: 0.7),
+                    ),
+                  ],
+                ],
+              ),
             ],
           ),
-          const SizedBox(height: 4),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: isSent ? AppTheme.primaryContainer : (isSystem ? AppTheme.surfaceContainerHighest : AppTheme.surfaceContainerHigh),
-              borderRadius: BorderRadius.circular(4),
-              border: isSystem ? const Border(left: BorderSide(color: AppTheme.secondary, width: 2)) : null,
-            ),
-            child: Text(text, style: TextStyle(fontSize: 14, color: isSent ? AppTheme.onPrimaryContainer : AppTheme.onSurface)),
-          ),
-        ],
+        ),
       ),
     );
   }
