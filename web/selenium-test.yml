@@ -48,7 +48,7 @@ jobs:
       # Step 6: Install React Frontend dependencies and build Vite app
       - name: Build React Frontend
         run: |
-          cd frontend
+          cd web/frontend
           npm install
           npm run build
           # Start the frontend dev server on port 5173 in the background
@@ -60,7 +60,7 @@ jobs:
       # Step 7: Install test framework packages (selenium-webdriver, mocha)
       - name: Install Selenium Test Dependencies
         run: |
-          cd selenuim-tests
+          cd web/selenuim-tests
           npm install
         shell: bash
 
@@ -73,7 +73,7 @@ jobs:
       # Step 9: Run Selenium E2E Mocha Tests
       - name: Run Selenium E2E Tests
         run: |
-          cd selenuim-tests
+          cd web/selenuim-tests
           npm run test
         shell: bash
         env:
