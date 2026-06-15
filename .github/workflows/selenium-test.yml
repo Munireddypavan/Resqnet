@@ -1,0 +1,80 @@
+name: Selenium E2E Web Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Java Environment for Spring Boot Backend
+      - name: Set up Java JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      # Step 3: Set up Node.js for Frontend and Selenium test suite
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Step 4: Build the Spring Boot backend tactical mesh emulator
+      - name: Build Spring Boot Backend
+        run: |
+          cd backend
+          mvn clean package -DskipTests
+        shell: bash
+
+      # Step 5: Start backend service in background
+      - name: Start Spring Boot Backend
+        run: |
+          cd backend
+          java -jar target/resqnet-web-backend-1.0.0.jar &
+          # Allow the backend server boot time (10 seconds)
+          sleep 10
+        shell: bash
+
+      # Step 6: Install React Frontend dependencies and build Vite app
+      - name: Build React Frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build
+          # Start the frontend dev server on port 5173 in the background
+          npm run dev &
+          # Wait 5 seconds for the server to be ready
+          sleep 5
+        shell: bash
+
+      # Step 7: Install test framework packages (selenium-webdriver, mocha)
+      - name: Install Selenium Test Dependencies
+        run: |
+          cd selenuim-tests
+          npm install
+        shell: bash
+
+      # Step 8: Ensure Chrome and Chromedriver are set up correctly
+      - name: Setup Chrome / Chromedriver
+        uses: browser-actions/setup-chrome@latest
+        with:
+          chrome-version: stable
+
+      # Step 9: Run Selenium E2E Mocha Tests
+      - name: Run Selenium E2E Tests
+        run: |
+          cd selenuim-tests
+          npm run test
+        shell: bash
+        env:
+          NODE_ENV: test
