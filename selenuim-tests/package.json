@@ -1,0 +1,15 @@
+{
+  "name": "resqnet-selenium-tests",
+  "version": "1.0.0",
+  "description": "E2E tests for ResQNet web frontend using Selenium WebDriver",
+  "type": "module",
+  "scripts": {
+    "test": "mocha tests/**/*.test.js --timeout 20000"
+  },
+  "dependencies": {
+    "selenium-webdriver": "^4.18.1"
+  },
+  "devDependencies": {
+    "mocha": "^10.3.0"
+  }
+}
